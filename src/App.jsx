@@ -13,7 +13,7 @@ import UpdateNotification_Form from "./Component/UpdateNotification_Form.jsx";
 import AdminReviewAllNotification from "./Component/Admin/AdminReviewAllNotification.jsx";
 import AdminAdd from "./Component/Admin/AdminAdd.jsx";
 import Fetchalladmindatamanage from "./Component/Admin/Fetchalladmindatamanage.jsx";
-import Services from "./Component/services.jsx";
+import Services from "./Component/Services.jsx";
 import About from "./Component/About.jsx";
 function App() {
   return (
