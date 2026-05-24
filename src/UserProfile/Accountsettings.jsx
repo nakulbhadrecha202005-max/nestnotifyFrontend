@@ -19,7 +19,7 @@ const IdentitySettings = () => {
         }
 
         const response = await fetch(
-          `http://localhost:5000/adminall_users/userSeeProfile`,
+          `https://notifynest-2.onrender.com/adminall_users/userSeeProfile`,
           {
             method: "GET",
             headers: {
@@ -60,7 +60,7 @@ const IdentitySettings = () => {
     setIsUpdating(true);
     try {
       const response = await fetch(
-        "https://notifynest-2.onrender.com/adminall_users/",
+        "https://notifynest-2.onrender.com/adminall_users/userprofileUpdate",
         {
           method: "POST",
           headers: {
