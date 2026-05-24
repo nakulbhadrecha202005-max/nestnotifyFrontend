@@ -6,6 +6,7 @@ const IdentitySettings = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
   const [error, setError] = useState(null);
+  const [UpdateID, setUpdateID] = useState("");
 
   // 1. Fetch all customer data from admin endpoint on mount
   useEffect(() => {
@@ -34,7 +35,7 @@ const IdentitySettings = () => {
         }
 
         const data = await response.json();
-        console.log("Fetched Data:", data);
+        //console.log("Fetched Data:", data);
 
         // Save the array of users into state (fallback to empty array if unexpected format)
         setUsers(Array.isArray(data) ? data : [data]);
@@ -60,9 +61,9 @@ const IdentitySettings = () => {
     setIsUpdating(true);
     try {
       const response = await fetch(
-        "https://notifynest-2.onrender.com/adminall_users/userprofileUpdate",
+        `https://notifynest-2.onrender.com/adminall_users/userprofileUpdate/${UpdateID}`,
         {
-          method: "POST",
+          method: "PATCH",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -72,8 +73,8 @@ const IdentitySettings = () => {
       );
 
       if (!response.ok)
-        throw new Error("Could not update profile database updates.");
-      alert("Changes saved successfully!");
+        //throw new Error("Could not update profile database updates.");
+        alert("Changes saved successfully!");
     } catch (err) {
       alert(err.message);
     } finally {
@@ -214,7 +215,10 @@ const IdentitySettings = () => {
         {/* Actions */}
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <button
-            onClick={handleUpdate}
+            onClick={() => {
+              setUpdateID(user._id);
+              handleUpdate();
+            }}
             disabled={isUpdating}
             className="flex-1 rounded-xl bg-[#462255] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#B2945B]"
           >

@@ -70,6 +70,7 @@ const LoginPage = () => {
 
     try {
       const url = "https://notifynest-2.onrender.com/auth/login";
+      //const url = "https://localhost:5000/auth/login";
 
       const response = await fetch(url, {
         method: "POST",
