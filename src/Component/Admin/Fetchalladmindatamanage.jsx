@@ -25,7 +25,7 @@ const Fetchalladmindatamanage = () => {
         return;
       }
       const res = await axios.get(
-        "https://notifynest-2.onrender.com/allAdminListfetch",
+        "https://notifynest-2.onrender.com/superadmin/allAdminListfetch",
         { headers: { Authorization: `Bearer ${token}` } },
       );
       // console.log(res.data);
