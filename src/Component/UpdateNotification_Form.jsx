@@ -15,6 +15,7 @@ const AdminReviewAllNotification = () => {
   const [editFormData, setEditFormData] = useState({
     message: "",
     priority: "",
+    isActive: true,
   });
   const [isSaving, setIsSaving] = useState(false);
 
@@ -77,12 +78,16 @@ const AdminReviewAllNotification = () => {
     setEditFormData({
       message: item.message,
       priority: item.priority || "Normal",
+      isActive: item.isActive !== undefined ? item.isActive : true,
     });
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setEditFormData((prev) => ({ ...prev, [name]: value }));
+    setEditFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
   };
 
   const handleSaveEdit = async (id) => {
@@ -95,6 +100,7 @@ const AdminReviewAllNotification = () => {
         ...existingItem,
         message: editFormData.message,
         priority: editFormData.priority, // ADDED: priority to payload
+        isActive: editFormData.isActive,
       };
 
       await axios.patch(
@@ -123,7 +129,8 @@ const AdminReviewAllNotification = () => {
     const query = searchQuery.toLowerCase();
     return (
       item.name?.toLowerCase().includes(query) ||
-      item.message?.toLowerCase().includes(query)
+      item.message?.toLowerCase().includes(query) ||
+      item.isActive?.toLowerCase().includes(query)
     );
   });
 

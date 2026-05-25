@@ -68,7 +68,7 @@ const AdminReviewAllNotification = () => {
       setNotifications(notifications.filter((item) => item._id !== deleteId));
       setShowModal(false);
     } catch (err) {
-      console.error(err);
+      // console.error(err);
       alert("Unable to remove notification.");
     }
   };
@@ -130,7 +130,8 @@ const AdminReviewAllNotification = () => {
     const query = searchQuery.toLowerCase();
     return (
       item.name?.toLowerCase().includes(query) ||
-      item.message?.toLowerCase().includes(query)
+      item.message?.toLowerCase().includes(query) ||
+      item.isActive?.toLowerCase().includes(query)
     );
   });
 
