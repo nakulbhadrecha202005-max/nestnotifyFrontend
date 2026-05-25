@@ -20,7 +20,7 @@ const IdentitySettings = () => {
         }
 
         const response = await fetch(
-          `https://notifynest-2.onrender.com/ adminall_users/userSeeProfile`,
+          `https://notifynest-2.onrender.com/adminall_users/userSeeProfile`,
           {
             method: "GET",
             headers: {
@@ -62,7 +62,7 @@ const IdentitySettings = () => {
     //console.log(id);
     try {
       const response = await fetch(
-        `https://notifynest-2.onrender.com/ adminall_users/userprofileUpdate/${id}`,
+        `https://notifynest-2.onrender.com/adminall_users/userprofileUpdate/${id}`,
         {
           method: "PATCH",
           headers: {

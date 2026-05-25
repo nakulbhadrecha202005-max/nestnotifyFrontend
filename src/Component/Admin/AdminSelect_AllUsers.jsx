@@ -58,7 +58,7 @@ const AdminSelect_AllUsers = () => {
       }
 
       const response = await fetch(
-        "https://notifynest-2.onrender.com/ adminall_users",
+        "https://notifynest-2.onrender.com/adminall_users",
         {
           method: "GET",
           headers: {
@@ -195,7 +195,7 @@ const AdminSelect_AllUsers = () => {
       if (formMode === "INSERT") {
         // --- INSERT NEW RECORD PIPELINE WITH PASSWORD ---
         const response = await fetch(
-          "https://notifynest-2.onrender.com/ auth/signup",
+          "https://notifynest-2.onrender.com/auth/signup",
           {
             method: "POST",
             headers: {
@@ -218,7 +218,7 @@ const AdminSelect_AllUsers = () => {
         // --- UPDATE TARGET RECORD PIPELINE WITH PASSWORD ---
         if (!Operation.Updateid) return;
         const response = await fetch(
-          `https://notifynest-2.onrender.com/ adminall_users/${Operation.Updateid}`,
+          `https://notifynest-2.onrender.com/adminall_users/${Operation.Updateid}`,
           {
             method: "PUT",
             headers: {
@@ -272,7 +272,7 @@ const AdminSelect_AllUsers = () => {
 
     try {
       const deletedata = await fetch(
-        `https://notifynest-2.onrender.com/ adminall_users/${Operation.Deleteid}`,
+        `https://notifynest-2.onrender.com/adminall_users/${Operation.Deleteid}`,
         {
           method: "DELETE",
           headers: {

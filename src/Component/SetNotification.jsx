@@ -6,14 +6,11 @@ const SetNotification = () => {
     const checkAuth = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await fetch(
-          "https://notifynest-2.onrender.com/ dashboard",
-          {
-            headers: {
-              Authorization: token,
-            },
+        const res = await fetch("https://notifynest-2.onrender.com/dashboard", {
+          headers: {
+            Authorization: token,
           },
-        );
+        });
 
         const data = await res.json();
 

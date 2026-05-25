@@ -69,7 +69,7 @@ const LoginPage = () => {
     }
 
     try {
-      const url = "https://notifynest-2.onrender.com/ auth/login";
+      const url = "https://notifynest-2.onrender.com/auth/login";
       //const url = "https://localhost:5000/auth/login";
 
       const response = await fetch(url, {
@@ -82,7 +82,7 @@ const LoginPage = () => {
 
       const result = await response.json();
 
-      console.log("API RESPONSE:", result);
+      // console.log("API RESPONSE:", result);
 
       if (!response.ok) {
         if (result.error) {
@@ -92,7 +92,6 @@ const LoginPage = () => {
         } else {
           setBackendError(result.message);
         }
-
         return;
       }
 
