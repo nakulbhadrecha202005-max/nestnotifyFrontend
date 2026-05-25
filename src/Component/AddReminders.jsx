@@ -23,7 +23,7 @@ export default function ReminderForm() {
       // console.log(form);
       const tokenforBackend = localStorage.getItem("token");
       const response = await axios.post(
-        "https://notifynest-2.onrender.com/AddReminderMain/AddReminders",
+        "https://notifynest-2.onrender.com/ AddReminderMain/AddReminders",
         form,
         {
           headers: {

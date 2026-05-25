@@ -22,7 +22,7 @@ const AdminReviewAllNotification = () => {
     try {
       const token = localStorage.getItem("token");
       const res = await axios.get(
-        "https://notifynest-2.onrender.com/AllNotification",
+        "https://notifynest-2.onrender.com/ AllNotification",
         {
           headers: { Authorization: `Bearer ${token}` },
         },
@@ -58,9 +58,12 @@ const AdminReviewAllNotification = () => {
   const confirmDelete = async () => {
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:5000/AllNotification/${deleteId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axios.delete(
+        `https://notifynest-2.onrender.com/ AllNotification/${deleteId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
       setNotifications(notifications.filter((item) => item._id !== deleteId));
       setShowModal(false);
     } catch (err) {
@@ -96,7 +99,7 @@ const AdminReviewAllNotification = () => {
       };
 
       await axios.patch(
-        `https://notifynest-2.onrender.com/AllNotification/${id}`,
+        `https://notifynest-2.onrender.com/ AllNotification/${id}`,
         updatedPayload,
         { headers: { Authorization: `Bearer ${token}` } },
       );

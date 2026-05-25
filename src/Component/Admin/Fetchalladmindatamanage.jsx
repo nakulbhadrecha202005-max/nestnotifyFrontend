@@ -25,11 +25,11 @@ const Fetchalladmindatamanage = () => {
         return;
       }
       const res = await axios.get(
-        "https://notifynest-2.onrender.com/superadmin/allAdminListfetch",
+        "https://notifynest-2.onrender.com/ superadmin/allAdminListfetch",
         { headers: { Authorization: `Bearer ${token}` } },
       );
       // console.log(res.data);
-      // console.log(res);
+      // console.log(res.status);
       setAdmins(res?.data || []);
     } catch (err) {
       setBackendError(err.response?.data?.message || "Failed to fetch admins");
@@ -55,7 +55,7 @@ const Fetchalladmindatamanage = () => {
       setAddAdminMessage("");
       const token = localStorage.getItem("token");
       const res = await axios.post(
-        "https://notifynest-2.onrender.com/superadmin/add-admin",
+        "https://notifynest-2.onrender.com/ superadmin/add-admin",
         { email: newAdminEmail },
         { headers: { Authorization: `Bearer ${token}` } },
       );
@@ -83,14 +83,16 @@ const Fetchalladmindatamanage = () => {
     try {
       setUpdateLoading(true);
       const token = localStorage.getItem("token");
-      await axios.put(
-        `https://notifynest-2.onrender.com/superadmin/updateAdmin/${selectedAdmin._id}`,
+      await axios.patch(
+        `https://notifynest-2.onrender.com/ superadmin/updateAdmin/${selectedAdmin._id}`,
         { email: updatedEmail },
         { headers: { Authorization: `Bearer ${token}` } },
       );
       fetchAllAdmins();
       setIsUpdateOpen(false);
     } catch (err) {
+      alert("Error duplicated email occurs " + err.message);
+      //console.log(err);
       setBackendError(err.response?.data?.message || "Failed to update admin");
     } finally {
       setUpdateLoading(false);
@@ -107,7 +109,7 @@ const Fetchalladmindatamanage = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.delete(
-        `https://notifynest-2.onrender.com/superadmin/deleteAdmin/${selectedAdmin._id}`,
+        `https://notifynest-2.onrender.com/ superadmin/deleteAdmin/${selectedAdmin._id}`,
         { headers: { Authorization: `Bearer ${token}` } },
       );
       setAdmins(admins.filter((item) => item._id !== selectedAdmin._id));
@@ -120,7 +122,7 @@ const Fetchalladmindatamanage = () => {
     }
   };
 
-  if (!admins || admins.length === 0 || backendError) {
+  if (!admins || admins.length === 0) {
     return (
       <>
         <div className="min-h-screen flex items-center justify-center bg-[#DDFFF7] p-6">

@@ -20,7 +20,7 @@ const IdentitySettings = () => {
         }
 
         const response = await fetch(
-          `https://notifynest-2.onrender.com/adminall_users/userSeeProfile`,
+          `https://notifynest-2.onrender.com/ adminall_users/userSeeProfile`,
           {
             method: "GET",
             headers: {
@@ -57,24 +57,26 @@ const IdentitySettings = () => {
   };
 
   // 2. Handle Update payload for all records
-  const handleUpdate = async () => {
+  const handleUpdate = async (id) => {
     setIsUpdating(true);
+    //console.log(id);
     try {
       const response = await fetch(
-        `https://notifynest-2.onrender.com/adminall_users/userprofileUpdate/${UpdateID}`,
+        `https://notifynest-2.onrender.com/ adminall_users/userprofileUpdate/${id}`,
         {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-          body: JSON.stringify({ users }),
+          body: JSON.stringify({ name: users[0]?.name }),
         },
       );
 
-      if (!response.ok)
-        //throw new Error("Could not update profile database updates.");
+      if (response.ok) {
         alert("Changes saved successfully!");
+      }
+      //throw new Error("Could not update profile database updates.");
     } catch (err) {
       alert(err.message);
     } finally {
@@ -208,30 +210,30 @@ const IdentitySettings = () => {
                     : "N/A"}
                 </p>
               </div>
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleUpdate(user._id);
+                  }}
+                  disabled={isUpdating}
+                  className="flex-1 rounded-xl bg-[#462255] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#B2945B]"
+                >
+                  {isUpdating ? "Processing..." : "Save Changes"}
+                </button>
+
+                <button
+                  onClick={() => window.location.reload()}
+                  className="rounded-xl border border-[#462255] px-5 py-3 text-sm font-semibold text-[#462255] transition hover:bg-[#DDFFF7]"
+                >
+                  Reset
+                </button>
+              </div>
             </div>
           ))}
         </div>
 
         {/* Actions */}
-        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-          <button
-            onClick={() => {
-              setUpdateID(user._id);
-              handleUpdate();
-            }}
-            disabled={isUpdating}
-            className="flex-1 rounded-xl bg-[#462255] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#B2945B]"
-          >
-            {isUpdating ? "Processing..." : "Save Changes"}
-          </button>
-
-          <button
-            onClick={() => window.location.reload()}
-            className="rounded-xl border border-[#462255] px-5 py-3 text-sm font-semibold text-[#462255] transition hover:bg-[#DDFFF7]"
-          >
-            Reset
-          </button>
-        </div>
       </div>
     </div>
   );

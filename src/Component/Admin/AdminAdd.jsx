@@ -16,7 +16,7 @@ const AdminAdd = () => {
       const token = localStorage.getItem("token");
 
       const res = await axios.post(
-        "https://notifynest-2.onrender.com/superadmin/add-admin",
+        "https://notifynest-2.onrender.com/ superadmin/add-admin",
         { email },
         {
           headers: {
@@ -42,7 +42,7 @@ const AdminAdd = () => {
     try {
       const token = localStorage.getItem("token");
       const res = await axios.get(
-        "https://notifynest-2.onrender.com/allAdminListfetch",
+        "https://notifynest-2.onrender.com/ allAdminListfetch",
         {
           headers: { Authorization: `Bearer ${token}` },
         },

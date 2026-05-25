@@ -5,6 +5,7 @@ const AdminSelect_AllUsers = () => {
   const navigate = useNavigate();
 
   // Session & User Data
+  const [admins, setAdmins] = useState(true);
   const [userName, setUserName] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const [all_users, setAll_users] = useState([]);
@@ -57,7 +58,7 @@ const AdminSelect_AllUsers = () => {
       }
 
       const response = await fetch(
-        "https://notifynest-2.onrender.com/adminall_users",
+        "https://notifynest-2.onrender.com/ adminall_users",
         {
           method: "GET",
           headers: {
@@ -68,11 +69,15 @@ const AdminSelect_AllUsers = () => {
       );
 
       if (response.status === 401 || response.status === 403) {
-        throw new Error("UNAUTHORIZED");
+        setAdmins(true);
       }
 
       const result = await response.json();
-      setAll_users(result.data || result);
+      setAll_users(result?.data || result);
+      console.log(response.status);
+      if (response.status === 200) {
+        setAdmins(false);
+      }
     } catch (err) {
       if (err.response) {
         // Server responded with error
@@ -90,6 +95,52 @@ const AdminSelect_AllUsers = () => {
       );
     }
   };
+
+  if (admins === true) {
+    return (
+      <>
+        <div className="min-h-screen flex items-center justify-center bg-[#DDFFF7] p-6">
+          <div className="max-w-md w-full bg-white shadow-2xl rounded-3xl p-8 text-center border-t-8 border-[#B2945B]">
+            {/* Icon Container */}
+            <div className="flex justify-center mb-6">
+              <div className="bg-[#93E1D8] p-4 rounded-full">
+                <svg
+                  className="w-12 h-12 text-[#462255]"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                  />
+                </svg>
+              </div>
+            </div>
+
+            {/* Message */}
+            <h2 className="text-3xl font-bold text-[#462255] mb-2">
+              Restricted Access
+            </h2>
+            <p className="text-[#898952] mb-8">
+              This area is strictly for administrators. Please return to your
+              dashboard or contact support if you believe this is an error.
+            </p>
+
+            {/* Action Button */}
+            <button
+              onClick={() => window.history.back()}
+              className="w-full py-3 px-6 bg-[#B2945B] hover:bg-[#898952] text-white font-semibold rounded-xl transition-all duration-300 shadow-lg transform hover:-translate-y-1"
+            >
+              Return to Previous Page
+            </button>
+          </div>
+        </div>
+      </>
+    );
+  }
 
   // Synchronize Form input mutations
   const handleFormInputChange = (e) => {
@@ -144,7 +195,7 @@ const AdminSelect_AllUsers = () => {
       if (formMode === "INSERT") {
         // --- INSERT NEW RECORD PIPELINE WITH PASSWORD ---
         const response = await fetch(
-          "https://notifynest-2.onrender.com/auth/signup",
+          "https://notifynest-2.onrender.com/ auth/signup",
           {
             method: "POST",
             headers: {
@@ -167,7 +218,7 @@ const AdminSelect_AllUsers = () => {
         // --- UPDATE TARGET RECORD PIPELINE WITH PASSWORD ---
         if (!Operation.Updateid) return;
         const response = await fetch(
-          `http://localhost:5000/adminall_users/${Operation.Updateid}`,
+          `https://notifynest-2.onrender.com/ adminall_users/${Operation.Updateid}`,
           {
             method: "PUT",
             headers: {
@@ -221,7 +272,7 @@ const AdminSelect_AllUsers = () => {
 
     try {
       const deletedata = await fetch(
-        `http://localhost:5000/adminall_users/${Operation.Deleteid}`,
+        `https://notifynest-2.onrender.com/ adminall_users/${Operation.Deleteid}`,
         {
           method: "DELETE",
           headers: {
@@ -244,52 +295,6 @@ const AdminSelect_AllUsers = () => {
       alert("Network action failure.");
     }
   };
-
-  if (!all_users || all_users.length === 0) {
-    return (
-      <>
-        <div className="min-h-screen flex items-center justify-center bg-[#DDFFF7] p-6">
-          <div className="max-w-md w-full bg-white shadow-2xl rounded-3xl p-8 text-center border-t-8 border-[#B2945B]">
-            {/* Icon Container */}
-            <div className="flex justify-center mb-6">
-              <div className="bg-[#93E1D8] p-4 rounded-full">
-                <svg
-                  className="w-12 h-12 text-[#462255]"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                  />
-                </svg>
-              </div>
-            </div>
-
-            {/* Message */}
-            <h2 className="text-3xl font-bold text-[#462255] mb-2">
-              Restricted Access
-            </h2>
-            <p className="text-[#898952] mb-8">
-              This area is strictly for administrators. Please return to your
-              dashboard or contact support if you believe this is an error.
-            </p>
-
-            {/* Action Button */}
-            <button
-              onClick={() => window.history.back()}
-              className="w-full py-3 px-6 bg-[#B2945B] hover:bg-[#898952] text-white font-semibold rounded-xl transition-all duration-300 shadow-lg transform hover:-translate-y-1"
-            >
-              Return to Previous Page
-            </button>
-          </div>
-        </div>
-      </>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-[#161613] text-[#DDFFF7] antialiased p-4 sm:p-6 lg:p-8">

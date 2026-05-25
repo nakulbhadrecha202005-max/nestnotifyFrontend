@@ -22,7 +22,7 @@ const AdminReviewAllNotification = () => {
     try {
       const token = localStorage.getItem("token");
       const res = await axios.get(
-        "https://notifynest-2.onrender.com/AllNotification",
+        "https://notifynest-2.onrender.com/ AllNotification",
         {
           headers: { Authorization: `Bearer ${token}` },
         },
@@ -58,7 +58,7 @@ const AdminReviewAllNotification = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.delete(
-        `https://notifynest-2.onrender.com/AllNotification/${deleteId}`,
+        `https://notifynest-2.onrender.com/ AllNotification/${deleteId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         },
@@ -98,7 +98,7 @@ const AdminReviewAllNotification = () => {
       };
 
       await axios.patch(
-        `https://notifynest-2.onrender.com/AllNotification/${id}`,
+        `https://notifynest-2.onrender.com/ AllNotification/${id}`,
         updatedPayload,
         { headers: { Authorization: `Bearer ${token}` } },
       );
@@ -226,6 +226,7 @@ const AdminReviewAllNotification = () => {
           /* HIGH EFFICIENCY MASS STREAM CONTENT HOLDER */
           <div className="  p-2 sm:p-4 space-y-2">
             {/* INLINE STREAM ENTRIES */}
+            {/* INLINE STREAM ENTRIES */}
             {filteredNotifications.map((item) => (
               <div
                 key={item._id}
@@ -244,28 +245,66 @@ const AdminReviewAllNotification = () => {
                         </span>
                       </div>
 
-                      {/* INLINE STATUS LEVEL TOGGLES */}
-                      <div className="flex items-center gap-1.5 bg-[#161613] p-1 rounded-lg border border-[#898952]/20">
-                        {["urgent", "important", "normal"].map((p) => (
-                          <label
-                            key={p}
-                            className={`px-3 py-1.5 rounded-md text-[9px] font-bold uppercase tracking-wider cursor-pointer transition-all ${
-                              editFormData.priority === p
-                                ? "bg-[#B2945B] text-[#161613] shadow-sm"
-                                : "text-[#898952] hover:text-[#DDFFF7]"
+                      {/* FLEX CONTAINER FOR PRIORITY & ACTIVE STATUS EDITORS */}
+                      <div className="flex flex-wrap items-center gap-3">
+                        {/* INLINE STATUS LEVEL TOGGLES */}
+                        <div className="flex items-center gap-1.5 bg-[#161613] p-1 rounded-lg border border-[#898952]/20">
+                          {["urgent", "important", "normal"].map((p) => (
+                            <label
+                              key={p}
+                              className={`px-3 py-1.5 rounded-md text-[9px] font-bold uppercase tracking-wider cursor-pointer transition-all ${
+                                editFormData.priority === p
+                                  ? "bg-[#B2945B] text-[#161613] shadow-sm"
+                                  : "text-[#898952] hover:text-[#DDFFF7]"
+                              }`}
+                            >
+                              <input
+                                type="radio"
+                                name="priority"
+                                value={p}
+                                checked={editFormData.priority === p}
+                                onChange={handleInputChange}
+                                className="hidden"
+                              />
+                              {p}
+                            </label>
+                          ))}
+                        </div>
+
+                        {/* ADDED: INLINE ACTIVE/INACTIVE TOGGLE SWITCH IN EDIT MODE */}
+                        <div className="flex items-center gap-2  px-3 py-1.5 rounded-lg">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setEditFormData((prev) => ({
+                                ...prev,
+                                isActive: !prev.isActive,
+                              }));
+                            }}
+                            className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors duration-200 ease-in-out focus:outline-none ${
+                              editFormData.isActive
+                                ? "bg-[#93E1D8]"
+                                : "bg-[#898952]/30"
                             }`}
                           >
-                            <input
-                              type="radio"
-                              name="priority"
-                              value={p}
-                              checked={editFormData.priority === p}
-                              onChange={handleInputChange}
-                              className="hidden"
+                            <span
+                              className={`pointer-events-none inline-block h-3.5 w-3.5 rounded-full bg-[#161613] shadow-sm transform transition duration-200 ease-in-out ${
+                                editFormData.isActive
+                                  ? "translate-x-[18px]" // Uses a precise arbitrary value so it moves perfectly to the right side
+                                  : "translate-x-0.5" // Nestles perfectly on the left side
+                              }`}
                             />
-                            {p}
-                          </label>
-                        ))}
+                          </button>
+                          <span
+                            className={`text-[9px] font-bold uppercase tracking-wider select-none min-w-[45px] ${
+                              editFormData.isActive
+                                ? "text-[#93E1D8]"
+                                : "text-[#898952]"
+                            }`}
+                          >
+                            {editFormData.isActive ? "Active" : "Inactive"}
+                          </span>
+                        </div>
                       </div>
                     </div>
 
@@ -294,7 +333,7 @@ const AdminReviewAllNotification = () => {
                       <button
                         onClick={() => handleSaveEdit(item._id)}
                         disabled={isSaving}
-                        className="px-4 py-1.5 text-xs font-bold bg-[#93E1D8] text-[#161613] hover:brightness-105 rounded-lg shadow-sm"
+                        className="px-4 py-1.5 text-xs font-semibold bg-[#93E1D8] text-[#161613] hover:brightness-105 rounded-lg shadow-sm"
                       >
                         {isSaving ? "Syncing..." : "Commit Update"}
                       </button>
@@ -342,8 +381,11 @@ const AdminReviewAllNotification = () => {
                         <span
                           className={`w-2 h-2 rounded-full ${item.isActive ? "bg-[#93E1D8] shadow-[0_0_8px_#93E1D8]" : "bg-[#898952]/40"}`}
                         />
-                        <span className="text-[11px] tracking-wide font-medium text-[#898952]">
-                          {item.isActive ? "Live Feed" : "Archived"}
+                        {/* UPDATED: Displays explicit ACTIVE or INACTIVE text string status */}
+                        <span
+                          className={`text-[11px] tracking-wide font-bold uppercase ${item.isActive ? "text-[#93E1D8]" : "text-[#898952]"}`}
+                        >
+                          {item.isActive ? "ACTIVE" : "INACTIVE"}
                         </span>
                       </div>
 
