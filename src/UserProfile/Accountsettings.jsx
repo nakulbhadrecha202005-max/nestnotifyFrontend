@@ -20,7 +20,7 @@ const IdentitySettings = () => {
         }
 
         const response = await fetch(
-          `https://notifynest-2.onrender.com/adminall_users/userSeeProfile`,
+          `http://localhost:5000/adminall_users/userSeeProfile`,
           {
             method: "GET",
             headers: {
@@ -62,7 +62,7 @@ const IdentitySettings = () => {
     //console.log(id);
     try {
       const response = await fetch(
-        `https://notifynest-2.onrender.com/adminall_users/userprofileUpdate/${id}`,
+        `http://localhost:5000/adminall_users/userprofileUpdate/${id}`,
         {
           method: "PATCH",
           headers: {
@@ -123,27 +123,26 @@ const IdentitySettings = () => {
         )}
 
         {/* Table Header */}
-        <div className="hidden grid-cols-5 gap-4 border-b border-[#93E1D8] pb-3 text-sm font-semibold text-[#898952] md:grid">
+        <div className="hidden grid-cols-5 gap-4 border-b border-[#93E1D8] pb-3 text-sm font-semibold text-[#898952] md:grid items-center">
           <div>Name</div>
           <div>Email</div>
           <div>Status</div>
           <div>Created At</div>
-          <div>Updated At</div>
+          <div className="text-right">Actions</div>
         </div>
 
-        {/* Users */}
+        {/* Users List */}
         <div className="divide-y divide-[#DDFFF7]">
           {users.map((user, index) => (
             <div
               key={user._id || index}
-              className="grid gap-4 py-5 md:grid-cols-5 md:items-center"
+              className="grid gap-4 py-4 md:grid-cols-5 md:items-center"
             >
               {/* Name */}
               <div>
                 <label className="mb-1 block text-xs font-medium text-[#898952] md:hidden">
                   Name
                 </label>
-
                 <input
                   type="text"
                   value={user.name || ""}
@@ -159,12 +158,11 @@ const IdentitySettings = () => {
                 <label className="mb-1 block text-xs font-medium text-[#898952] md:hidden">
                   Email
                 </label>
-
                 <input
                   type="email"
                   value={user.email || ""}
                   readOnly
-                  className="w-full rounded-lg bg-gray-50 px-3 py-2 text-sm text-[#898952] outline-none"
+                  className="w-full rounded-lg bg-gray-50 px-3 py-2 text-sm text-[#898952] outline-none border border-transparent"
                 />
               </div>
 
@@ -173,9 +171,8 @@ const IdentitySettings = () => {
                 <label className="mb-1 block text-xs font-medium text-[#898952] md:hidden">
                   Status
                 </label>
-
                 <span
-                  className={`inline-flex rounded-md px-3 py-1 text-xs font-medium ${
+                  className={`inline-flex rounded-md px-2.5 py-1 text-xs font-medium ${
                     user.agreeTerms
                       ? "bg-[#93E1D8] text-[#462255]"
                       : "bg-[#DDFFF7] text-[#898952]"
@@ -190,41 +187,30 @@ const IdentitySettings = () => {
                 <label className="mb-1 block text-xs font-medium text-[#898952] md:hidden">
                   Created At
                 </label>
-
                 <p className="text-sm text-[#462255]">
-                  {new Date(
-                    parseInt(user._id.substring(0, 8), 16) * 1000,
-                  ).toLocaleString()}
-                </p>
-              </div>
-
-              {/* Updated At */}
-              <div>
-                <label className="mb-1 block text-xs font-medium text-[#898952] md:hidden">
-                  Updated At
-                </label>
-
-                <p className="text-sm text-[#462255]">
-                  {user.updatedAt
-                    ? new Date(user.updatedAt).toLocaleString()
+                  {user._id
+                    ? new Date(
+                        parseInt(user._id.substring(0, 8), 16) * 1000,
+                      ).toLocaleString()
                     : "N/A"}
                 </p>
               </div>
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+
+              {/* Action Buttons (Set / Reset) */}
+              <div className="mt-2 flex items-center gap-2 md:mt-0 md:justify-end">
                 <button
                   type="button"
-                  onClick={() => {
-                    handleUpdate(user._id);
-                  }}
+                  onClick={() => handleUpdate(user._id)}
                   disabled={isUpdating}
-                  className="flex-1 rounded-xl bg-[#462255] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#B2945B]"
+                  className="flex-1 rounded-lg bg-[#462255] px-4 py-2 text-xs font-semibold text-white transition hover:bg-[#B2945B] disabled:opacity-50 md:flex-none"
                 >
-                  {isUpdating ? "Processing..." : "Save Changes"}
+                  {isUpdating ? "Saving..." : "Set"}
                 </button>
 
                 <button
+                  type="button"
                   onClick={() => window.location.reload()}
-                  className="rounded-xl border border-[#462255] px-5 py-3 text-sm font-semibold text-[#462255] transition hover:bg-[#DDFFF7]"
+                  className="flex-1 rounded-lg border border-[#462255] px-4 py-2 text-xs font-semibold text-[#462255] transition hover:bg-[#DDFFF7] md:flex-none"
                 >
                   Reset
                 </button>

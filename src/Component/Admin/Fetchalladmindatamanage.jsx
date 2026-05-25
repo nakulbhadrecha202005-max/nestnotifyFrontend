@@ -25,7 +25,7 @@ const Fetchalladmindatamanage = () => {
         return;
       }
       const res = await axios.get(
-        "https://notifynest-2.onrender.com/superadmin/allAdminListfetch",
+        "http://localhost:5000/superadmin/allAdminListfetch",
         { headers: { Authorization: `Bearer ${token}` } },
       );
       // console.log(res.data);
@@ -55,7 +55,7 @@ const Fetchalladmindatamanage = () => {
       setAddAdminMessage("");
       const token = localStorage.getItem("token");
       const res = await axios.post(
-        "https://notifynest-2.onrender.com/superadmin/add-admin",
+        "http://localhost:5000/superadmin/add-admin",
         { email: newAdminEmail },
         { headers: { Authorization: `Bearer ${token}` } },
       );
@@ -84,7 +84,7 @@ const Fetchalladmindatamanage = () => {
       setUpdateLoading(true);
       const token = localStorage.getItem("token");
       await axios.patch(
-        `https://notifynest-2.onrender.com/superadmin/updateAdmin/${selectedAdmin._id}`,
+        `http://localhost:5000/superadmin/updateAdmin/${selectedAdmin._id}`,
         { email: updatedEmail },
         { headers: { Authorization: `Bearer ${token}` } },
       );
@@ -109,7 +109,7 @@ const Fetchalladmindatamanage = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.delete(
-        `https://notifynest-2.onrender.com/superadmin/deleteAdmin/${selectedAdmin._id}`,
+        `http://localhost:5000/superadmin/deleteAdmin/${selectedAdmin._id}`,
         { headers: { Authorization: `Bearer ${token}` } },
       );
       setAdmins(admins.filter((item) => item._id !== selectedAdmin._id));

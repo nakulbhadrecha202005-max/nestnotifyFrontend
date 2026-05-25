@@ -6,7 +6,7 @@ const SetNotification = () => {
     const checkAuth = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await fetch("https://notifynest-2.onrender.com/dashboard", {
+        const res = await fetch("http://localhost:5000/dashboard", {
           headers: {
             Authorization: token,
           },

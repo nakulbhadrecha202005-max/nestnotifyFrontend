@@ -57,16 +57,13 @@ const AdminSelect_AllUsers = () => {
         return;
       }
 
-      const response = await fetch(
-        "https://notifynest-2.onrender.com/adminall_users",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
+      const response = await fetch("http://localhost:5000/adminall_users", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-      );
+      });
 
       if (response.status === 401 || response.status === 403) {
         setAdmins(true);
@@ -194,17 +191,14 @@ const AdminSelect_AllUsers = () => {
     try {
       if (formMode === "INSERT") {
         // --- INSERT NEW RECORD PIPELINE WITH PASSWORD ---
-        const response = await fetch(
-          "https://notifynest-2.onrender.com/auth/signup",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify(formData),
+        const response = await fetch("http://localhost:5000/auth/signup", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
-        );
+          body: JSON.stringify(formData),
+        });
 
         const result = await response.json();
         if (response.ok) {
@@ -218,7 +212,7 @@ const AdminSelect_AllUsers = () => {
         // --- UPDATE TARGET RECORD PIPELINE WITH PASSWORD ---
         if (!Operation.Updateid) return;
         const response = await fetch(
-          `https://notifynest-2.onrender.com/adminall_users/${Operation.Updateid}`,
+          `http://localhost:5000/adminall_users/${Operation.Updateid}`,
           {
             method: "PUT",
             headers: {
@@ -272,7 +266,7 @@ const AdminSelect_AllUsers = () => {
 
     try {
       const deletedata = await fetch(
-        `https://notifynest-2.onrender.com/adminall_users/${Operation.Deleteid}`,
+        `http://localhost:5000/adminall_users/${Operation.Deleteid}`,
         {
           method: "DELETE",
           headers: {

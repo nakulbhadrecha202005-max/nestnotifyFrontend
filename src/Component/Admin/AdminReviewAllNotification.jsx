@@ -15,18 +15,16 @@ const AdminReviewAllNotification = () => {
   const [editFormData, setEditFormData] = useState({
     message: "",
     priority: "",
+    isActive: true,
   });
   const [isSaving, setIsSaving] = useState(false);
 
   const fetchNotifications = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get(
-        "https://notifynest-2.onrender.com/AllNotification",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      );
+      const res = await axios.get("http://localhost:5000/AllNotification", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       console.log(res.data);
       if (res.data.message) {
         setError(res.data.message);
@@ -58,12 +56,9 @@ const AdminReviewAllNotification = () => {
   const confirmDelete = async () => {
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(
-        `https://notifynest-2.onrender.com/AllNotification/${deleteId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      );
+      await axios.delete(`http://localhost:5000/AllNotification/${deleteId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setNotifications(notifications.filter((item) => item._id !== deleteId));
       setShowModal(false);
     } catch (err) {
@@ -78,12 +73,16 @@ const AdminReviewAllNotification = () => {
     setEditFormData({
       message: item.message,
       priority: item.priority || "Normal",
+      isActive: item.isActive !== undefined ? item.isActive : true,
     });
   };
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setEditFormData((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = e.target;
+    setEditFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
   };
 
   const handleSaveEdit = async (id) => {
@@ -95,11 +94,12 @@ const AdminReviewAllNotification = () => {
       const updatedPayload = {
         ...existingItem,
         message: editFormData.message,
-        priority: editFormData.priority, // ADDED: priority to payload
+        priority: editFormData.priority,
+        isActive: editFormData.isActive, // ADDED: priority to payload
       };
 
       await axios.patch(
-        `https://notifynest-2.onrender.com/AllNotification/${id}`,
+        `http://localhost:5000/AllNotification/${id}`,
         updatedPayload,
         { headers: { Authorization: `Bearer ${token}` } },
       );
@@ -245,28 +245,48 @@ const AdminReviewAllNotification = () => {
                         </span>
                       </div>
 
-                      {/* INLINE STATUS LEVEL TOGGLES */}
-                      <div className="flex items-center gap-1.5 bg-[#161613] p-1 rounded-lg border border-[#898952]/20">
-                        {["urgent", "important", "normal"].map((p) => (
-                          <label
-                            key={p}
-                            className={`px-3 py-1.5 rounded-md text-[9px] font-bold uppercase tracking-wider cursor-pointer transition-all ${
-                              editFormData.priority === p
-                                ? "bg-[#B2945B] text-[#161613] shadow-sm"
-                                : "text-[#898952] hover:text-[#DDFFF7]"
-                            }`}
-                          >
+                      {/* COMBINED META CONTROLS (PRIORITY & INSTAGRAM TOGGLE) */}
+                      <div className="flex flex-wrap items-center gap-4">
+                        {/* INLINE STATUS LEVEL TOGGLES */}
+                        <div className="flex items-center gap-1.5 bg-[#161613] p-1 rounded-lg border border-[#898952]/20">
+                          {["urgent", "important", "normal"].map((p) => (
+                            <label
+                              key={p}
+                              className={`px-3 py-1.5 rounded-md text-[9px] font-bold uppercase tracking-wider cursor-pointer transition-all ${
+                                editFormData.priority === p
+                                  ? "bg-[#B2945B] text-[#161613] shadow-sm"
+                                  : "text-[#898952] hover:text-[#DDFFF7]"
+                              }`}
+                            >
+                              <input
+                                type="radio"
+                                name="priority"
+                                value={p}
+                                checked={editFormData.priority === p}
+                                onChange={handleInputChange}
+                                className="hidden"
+                              />
+                              {p}
+                            </label>
+                          ))}
+                        </div>
+
+                        {/* INSTAGRAM / IOS STYLE TOGGLE SWITCH */}
+                        <div className="flex items-center gap-2 bg-[#161613] py-1.5 px-3 rounded-lg border border-[#898952]/20">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-[#898952]">
+                            {editFormData.isActive ? "Active" : "Inactive"}
+                          </span>
+                          <label className="relative inline-flex items-center cursor-pointer select-none">
                             <input
-                              type="radio"
-                              name="priority"
-                              value={p}
-                              checked={editFormData.priority === p}
+                              type="checkbox"
+                              name="isActive"
+                              checked={editFormData.isActive}
                               onChange={handleInputChange}
-                              className="hidden"
+                              className="sr-only peer"
                             />
-                            {p}
+                            <div className="w-9 h-5 bg-[#292921] border border-[#898952]/40 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-[#898952] after:border-transparent after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#93E1D8] peer-checked:after:bg-[#161613] peer-checked:border-transparent"></div>
                           </label>
-                        ))}
+                        </div>
                       </div>
                     </div>
 
@@ -339,12 +359,21 @@ const AdminReviewAllNotification = () => {
 
                     {/* METRICS CONTROL PANEL & ACTIONS */}
                     <div className="flex items-center justify-between md:justify-end gap-6 shrink-0 pt-2 md:pt-0 border-t border-[#898952]/10 md:border-t-0">
+                      {/* DYNAMIC ACTIVE / INACTIVE DATA PREVIEW PILL */}
                       <div className="flex items-center gap-2">
                         <span
-                          className={`w-2 h-2 rounded-full ${item.isActive ? "bg-[#93E1D8] shadow-[0_0_8px_#93E1D8]" : "bg-[#898952]/40"}`}
+                          className={`w-2 h-2 rounded-full ${
+                            item.isActive
+                              ? "bg-[#93E1D8] shadow-[0_0_8px_#93E1D8] animate-pulse"
+                              : "bg-red-500/50"
+                          }`}
                         />
-                        <span className="text-[11px] tracking-wide font-medium text-[#898952]">
-                          {item.isActive ? "Live Feed" : "Archived"}
+                        <span
+                          className={`text-[11px] tracking-wide font-semibold uppercase ${
+                            item.isActive ? "text-[#93E1D8]" : "text-red-400/70"
+                          }`}
+                        >
+                          {item.isActive ? "Live Feed" : "Inactive"}
                         </span>
                       </div>
 
@@ -423,7 +452,7 @@ const AdminReviewAllNotification = () => {
                   onClick={confirmDelete}
                   className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-xs font-bold rounded-lg shadow-sm"
                 >
-                  Confirm Purge
+                  Confirm Delete
                 </button>
               </div>
             </div>
