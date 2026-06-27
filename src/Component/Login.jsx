@@ -114,8 +114,8 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#DDFFF7] flex items-center justify-center p-4 font-sans -mt-20">
-      <div className="w-full max-w-[1000px] grid lg:grid-cols-2 bg-white rounded-[32px] shadow-2xl shadow-[#462255]/10 overflow-hidden border border-[#93E1D8]">
+    <div className="min-h-screen bg-[#DDFFF7] flex items-center justify-center p-4 font-sans ">
+      <div className="w-full max-w-[1000px] grid lg:grid-cols-2 bg-white rounded-[32px] shadow-2xl shadow-[#462255]/10 overflow-hidden border mt-1 border-[#93E1D8]">
         {/* --- LEFT SIDE: BRAND & TRUST --- */}
         <div className="hidden lg:flex flex-col justify-between p-12 bg-[#462255] text-white relative">
           <div className="relative z-10">
