@@ -38,11 +38,11 @@ export default function Home() {
           {/* ACTIONS */}
           <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row lg:justify-start">
             <button className="rounded-xl bg-gradient-to-r from-[#B2945B] to-[#93E1D8] px-6 py-3.5 text-sm font-bold text-[#16121e] shadow-lg shadow-[#B2945B]/10 transition duration-200 hover:brightness-110">
-              Start Reminding Me
+              <Link to="/SetNotification">Start Reminding Me</Link>
             </button>
 
             <button className="rounded-xl border border-white/10 bg-white/5 px-6 py-3.5 text-sm font-semibold text-slate-200 transition duration-200 hover:bg-white/10">
-              See How It Works
+              <Link to="/Services">See How It Works</Link>
             </button>
           </div>
 
