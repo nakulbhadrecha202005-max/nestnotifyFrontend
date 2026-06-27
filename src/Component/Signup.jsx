@@ -62,7 +62,6 @@ const SignupPage = () => {
       const result = await response.json();
       const { success, message, error } = result;
       if (success) {
-        //alert("Succcess");
         navigation("/login");
       }
       if (!response.ok) {
@@ -75,9 +74,7 @@ const SignupPage = () => {
         }
         return;
       }
-      //alert("Signup successful");
       navigation("/login");
-      //console.log(result);
     } catch (err) {
       setErrors("Something Went Wrong : " + err);
     }

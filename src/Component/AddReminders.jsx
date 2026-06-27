@@ -10,17 +10,68 @@ export default function ReminderForm() {
     priority: "normal",
   });
 
+  const restrictedaccess = () => {
+    return (
+      <>
+        <div className="min-h-screen flex items-center justify-center bg-[#DDFFF7] p-6">
+          <div className="max-w-md w-full bg-white shadow-2xl rounded-3xl p-8 text-center border-t-8 border-[#B2945B]">
+            {/* Icon Container */}
+            <div className="flex justify-center mb-6">
+              <div className="bg-[#93E1D8] p-4 rounded-full">
+                <svg
+                  className="w-12 h-12 text-[#462255]"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                  />
+                </svg>
+              </div>
+            </div>
+
+            {/* Message */}
+            <h2 className="text-3xl font-bold text-[#462255] mb-2">
+              Restricted Access
+            </h2>
+            <p className="text-[#898952] mb-8">
+              This area is strictly for administrators. Please return to your
+              dashboard or contact support if you believe this is an error.
+            </p>
+
+            {/* Action Button */}
+            <button
+              onClick={() => window.history.back()}
+              className="w-full py-3 px-6 bg-[#B2945B] hover:bg-[#898952] text-white font-semibold rounded-xl transition-all duration-300 shadow-lg transform hover:-translate-y-1"
+            >
+              Return to Previous Page
+            </button>
+          </div>
+        </div>
+      </>
+    );
+  };
+
+  const user = localStorage.getItem("logggedInUser");
+  const email = localStorage.getItem("logggedInUserEmail");
+  const token = localStorage.getItem("token");
+
+  if (!token || !user || !email) {
+    return restrictedaccess();
+  }
+
   const handleChange = (e) =>
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   const handleSubmit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
     const email = localStorage.getItem("logggedInUserEmail");
-    // console.log(
-    // `Email ${localStorage.getItem("logggedInUserEmail")}, Token ${localStorage.getItem("token")}`,
-    // );
+
     try {
-      // console.log(form);
       const tokenforBackend = localStorage.getItem("token");
       const response = await axios.post(
         "https://notifynest-2.onrender.com/AddReminderMain/AddReminders",
@@ -31,9 +82,7 @@ export default function ReminderForm() {
           },
         },
       );
-      // console.log(response.data);
       alert(`Reminder saved for ${form.name}!`);
-      // reset form
       setForm({
         name: "",
         email: "",
@@ -41,11 +90,6 @@ export default function ReminderForm() {
         priority: "normal",
       });
     } catch (err) {
-      // console.error(err);
-      // console.log("ERROR RESPONSE:", err.response);
-      // console.log("ERROR DATA:", err.response?.data);
-      // console.log("STATUS:", err.response?.status);
-
       alert("Failed to insert data");
     }
   };

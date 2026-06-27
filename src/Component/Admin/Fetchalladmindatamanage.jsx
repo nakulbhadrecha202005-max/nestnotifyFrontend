@@ -28,8 +28,7 @@ const Fetchalladmindatamanage = () => {
         "https://notifynest-2.onrender.com/superadmin/allAdminListfetch",
         { headers: { Authorization: `Bearer ${token}` } },
       );
-      // console.log(res.data);
-      // console.log(res.status);
+      console.log(res.data);
       setAdmins(res?.data || []);
     } catch (err) {
       setBackendError(err.response?.data?.message || "Failed to fetch admins");

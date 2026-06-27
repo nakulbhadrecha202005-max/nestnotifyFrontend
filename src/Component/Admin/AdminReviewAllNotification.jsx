@@ -17,35 +17,121 @@ const AdminReviewAllNotification = () => {
     priority: "",
     isActive: true,
   });
+  const [admin, setAdmin] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const token_ = localStorage.getItem("token");
+  const email_ = localStorage.getItem("logggedInUserEmail");
+  if (!token_ && !email_) {
+    return (
+      <>
+        <div className="min-h-screen flex items-center justify-center bg-[#DDFFF7] p-6">
+          <div className="max-w-md w-full bg-white shadow-2xl rounded-3xl p-8 text-center border-t-8 border-[#B2945B]">
+            {/* Icon Container */}
+            <div className="flex justify-center mb-6">
+              <div className="bg-[#93E1D8] p-4 rounded-full">
+                <svg
+                  className="w-12 h-12 text-[#462255]"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                  />
+                </svg>
+              </div>
+            </div>
 
+            {/* Message */}
+            <h2 className="text-3xl font-bold text-[#462255] mb-2">
+              Restricted Access
+            </h2>
+            <p className="text-[#898952] mb-8">
+              This area is strictly for administrators. Please return to your
+              dashboard or contact support if you believe this is an error.
+            </p>
+
+            {/* Action Button */}
+            <button
+              onClick={() => window.history.back()}
+              className="w-full py-3 px-6 bg-[#B2945B] hover:bg-[#898952] text-white font-semibold rounded-xl transition-all duration-300 shadow-lg transform hover:-translate-y-1"
+            >
+              Return to Previous Page
+            </button>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  const restrictedAccess = () => {
+    return (
+      <>
+        <>
+          <div className="min-h-screen flex items-center justify-center bg-[#DDFFF7] p-6">
+            <div className="max-w-md w-full bg-white shadow-2xl rounded-3xl p-8 text-center border-t-8 border-[#B2945B]">
+              {/* Icon Container */}
+              <div className="flex justify-center mb-6">
+                <div className="bg-[#93E1D8] p-4 rounded-full">
+                  <svg
+                    className="w-12 h-12 text-[#462255]"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                    />
+                  </svg>
+                </div>
+              </div>
+
+              {/* Message */}
+              <h2 className="text-3xl font-bold text-[#462255] mb-2">
+                Restricted Access
+              </h2>
+              <p className="text-[#898952] mb-8">
+                This area is strictly for administrators. Please return to your
+                dashboard or contact support if you believe this is an error.
+              </p>
+
+              {/* Action Button */}
+              <button
+                onClick={() => window.history.back()}
+                className="w-full py-3 px-6 bg-[#B2945B] hover:bg-[#898952] text-white font-semibold rounded-xl transition-all duration-300 shadow-lg transform hover:-translate-y-1"
+              >
+                Return to Previous Page
+              </button>
+            </div>
+          </div>
+        </>
+      </>
+    );
+  };
   const fetchNotifications = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get(
-        "https://notifynest-2.onrender.com/AllNotification",
+      const response = await axios.get(
+        "https://notifynest-2.onrender.com/AllNotification/fetchNotificationsByAdmin",
         {
           headers: { Authorization: `Bearer ${token}` },
         },
       );
-      console.log(res.data);
-      if (res.data.message) {
-        setError(res.data.message);
-      }
-      if (res.data.notifications) {
-        setNotifications(res.data.notifications);
-      } else {
-        setError("No Right of Admin.");
-      }
+      // console.log(response.data);
+      // console.log("Array?", Array.isArray(notifications));
+      setNotifications(response.data.notifications);
     } catch (err) {
-      if (err.response?.status === 401) {
-        setError("Unauthorized Access");
-      } else {
-        // setError(
-        //   "Failed to sync notifications Or Restricted Access You dont have privilage to Access Admin page. Please refresh.",
-        // );
-        setError(err.response.data.message);
+      if (err.status === 403) {
+        setAdmin(true);
+        restrictedAccess();
       }
+      setError(err.message);
     } finally {
       setLoading(false);
     }
@@ -59,14 +145,16 @@ const AdminReviewAllNotification = () => {
   const confirmDelete = async () => {
     try {
       const token = localStorage.getItem("token");
+      console.log(deleteId);
       await axios.delete(
-        `https://notifynest-2.onrender.com/AllNotification/${deleteId}`,
+        `https://notifynest-2.onrender.com/AllNotification/delete/${deleteId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         },
       );
       setNotifications(notifications.filter((item) => item._id !== deleteId));
       setShowModal(false);
+      await fetchNotifications();
     } catch (err) {
       // console.error(err);
       alert("Unable to remove notification.");
@@ -100,8 +188,8 @@ const AdminReviewAllNotification = () => {
       const updatedPayload = {
         ...existingItem,
         message: editFormData.message,
-        priority: editFormData.priority,
-        isActive: editFormData.isActive, // ADDED: priority to payload
+        priority: editFormData.priority, // ADDED: priority to payload
+        isActive: editFormData.isActive,
       };
 
       await axios.patch(
@@ -115,7 +203,7 @@ const AdminReviewAllNotification = () => {
       );
       setEditingId(null);
     } catch (err) {
-      console.error(err);
+      // console.error(err);
       alert("Failed to save changes.");
     } finally {
       setIsSaving(false);
@@ -126,14 +214,67 @@ const AdminReviewAllNotification = () => {
     fetchNotifications();
   }, []);
 
-  const filteredNotifications = notifications.filter((item) => {
-    const query = searchQuery.toLowerCase();
+  const token = localStorage.getItem("token");
+  if (!token) {
     return (
-      item.name?.toLowerCase().includes(query) ||
-      item.message?.toLowerCase().includes(query) ||
-      item.isActive?.toLowerCase().includes(query)
+      <>
+        <div className="min-h-screen flex items-center justify-center bg-[#DDFFF7] p-6">
+          <div className="max-w-md w-full bg-white shadow-2xl rounded-3xl p-8 text-center border-t-8 border-[#B2945B]">
+            {/* Icon Container */}
+            <div className="flex justify-center mb-6">
+              <div className="bg-[#93E1D8] p-4 rounded-full">
+                <svg
+                  className="w-12 h-12 text-[#462255]"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                  />
+                </svg>
+              </div>
+            </div>
+
+            {/* Message */}
+            <h2 className="text-3xl font-bold text-[#462255] mb-2">
+              Restricted Access
+            </h2>
+            <p className="text-[#898952] mb-8">
+              This area is strictly for administrators. Please return to your
+              dashboard or contact support if you believe this is an error.
+            </p>
+
+            {/* Action Button */}
+            <button
+              onClick={() => window.history.back()}
+              className="w-full py-3 px-6 bg-[#B2945B] hover:bg-[#898952] text-white font-semibold rounded-xl transition-all duration-300 shadow-lg transform hover:-translate-y-1"
+            >
+              Return to Previous Page
+            </button>
+          </div>
+        </div>
+      </>
     );
-  });
+  }
+
+  if (admin) {
+    return restrictedAccess();
+  }
+
+  const filteredNotifications = notifications
+    .filter((item) => item !== null)
+    .filter((item) => {
+      const query = searchQuery.toLowerCase();
+
+      return (
+        item.name?.toLowerCase().includes(query) ||
+        item.message?.toLowerCase().includes(query)
+      );
+    });
 
   const getPriorityStyles = (priority) => {
     switch (priority?.toLowerCase()) {
@@ -155,7 +296,7 @@ const AdminReviewAllNotification = () => {
         <header className="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-[#898952]/20 pb-6">
           <div>
             <span className="text-[10px] font-bold uppercase tracking-widest text-[#93E1D8] bg-[#93E1D8]/10 border border-[#93E1D8]/20 px-3 py-1 rounded-md">
-              System Administrator Hub
+              System User Dashboard
             </span>
             <h1 className="text-2xl md:text-3xl font-black tracking-tight text-white mt-2">
               Updates & Live Alerts
@@ -194,7 +335,7 @@ const AdminReviewAllNotification = () => {
         {/* ERROR SCREEN ALERT ROUTER */}
         {error && (
           <div
-            className="mb-6 flex flex-row items-start gap-3 bg-red-950/20 border border-red-900/30 text-red-200 text-xs rounded-xl p-4 shadow-md backdrop-blur-sm"
+            className="mb-6 flex flex-row items-start gap-3 bg-[#93E1D8]/20 border border-red-900/30 text-red-200 text-xs rounded-xl p-4 shadow-md backdrop-blur-sm"
             role="alert"
           >
             <div className="flex-shrink-0 text-red-400 bg-red-500/10 p-1 rounded-md mt-0.5">
@@ -234,6 +375,7 @@ const AdminReviewAllNotification = () => {
           /* HIGH EFFICIENCY MASS STREAM CONTENT HOLDER */
           <div className="  p-2 sm:p-4 space-y-2">
             {/* INLINE STREAM ENTRIES */}
+            {/* INLINE STREAM ENTRIES */}
             {filteredNotifications.map((item) => (
               <div
                 key={item._id}
@@ -252,8 +394,8 @@ const AdminReviewAllNotification = () => {
                         </span>
                       </div>
 
-                      {/* COMBINED META CONTROLS (PRIORITY & INSTAGRAM TOGGLE) */}
-                      <div className="flex flex-wrap items-center gap-4">
+                      {/* FLEX CONTAINER FOR PRIORITY & ACTIVE STATUS EDITORS */}
+                      <div className="flex flex-wrap items-center gap-3">
                         {/* INLINE STATUS LEVEL TOGGLES */}
                         <div className="flex items-center gap-1.5 bg-[#161613] p-1 rounded-lg border border-[#898952]/20">
                           {["urgent", "important", "normal"].map((p) => (
@@ -278,21 +420,39 @@ const AdminReviewAllNotification = () => {
                           ))}
                         </div>
 
-                        {/* INSTAGRAM / IOS STYLE TOGGLE SWITCH */}
-                        <div className="flex items-center gap-2 bg-[#161613] py-1.5 px-3 rounded-lg border border-[#898952]/20">
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-[#898952]">
+                        {/* ADDED: INLINE ACTIVE/INACTIVE TOGGLE SWITCH IN EDIT MODE */}
+                        <div className="flex items-center gap-2  px-3 py-1.5 rounded-lg">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setEditFormData((prev) => ({
+                                ...prev,
+                                isActive: !prev.isActive,
+                              }));
+                            }}
+                            className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors duration-200 ease-in-out focus:outline-none ${
+                              editFormData.isActive
+                                ? "bg-[#93E1D8]"
+                                : "bg-[#898952]/30"
+                            }`}
+                          >
+                            <span
+                              className={`pointer-events-none inline-block h-3.5 w-3.5 rounded-full bg-[#161613] shadow-sm transform transition duration-200 ease-in-out ${
+                                editFormData.isActive
+                                  ? "translate-x-[18px]" // Uses a precise arbitrary value so it moves perfectly to the right side
+                                  : "translate-x-0.5" // Nestles perfectly on the left side
+                              }`}
+                            />
+                          </button>
+                          <span
+                            className={`text-[9px] font-bold uppercase tracking-wider select-none min-w-[45px] ${
+                              editFormData.isActive
+                                ? "text-[#93E1D8]"
+                                : "text-[#898952]"
+                            }`}
+                          >
                             {editFormData.isActive ? "Active" : "Inactive"}
                           </span>
-                          <label className="relative inline-flex items-center cursor-pointer select-none">
-                            <input
-                              type="checkbox"
-                              name="isActive"
-                              checked={editFormData.isActive}
-                              onChange={handleInputChange}
-                              className="sr-only peer"
-                            />
-                            <div className="w-9 h-5 bg-[#292921] border border-[#898952]/40 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-[#898952] after:border-transparent after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#93E1D8] peer-checked:after:bg-[#161613] peer-checked:border-transparent"></div>
-                          </label>
                         </div>
                       </div>
                     </div>
@@ -322,7 +482,7 @@ const AdminReviewAllNotification = () => {
                       <button
                         onClick={() => handleSaveEdit(item._id)}
                         disabled={isSaving}
-                        className="px-4 py-1.5 text-xs font-bold bg-[#93E1D8] text-[#161613] hover:brightness-105 rounded-lg shadow-sm"
+                        className="px-4 py-1.5 text-xs font-semibold bg-[#93E1D8] text-[#161613] hover:brightness-105 rounded-lg shadow-sm"
                       >
                         {isSaving ? "Syncing..." : "Commit Update"}
                       </button>
@@ -366,27 +526,22 @@ const AdminReviewAllNotification = () => {
 
                     {/* METRICS CONTROL PANEL & ACTIONS */}
                     <div className="flex items-center justify-between md:justify-end gap-6 shrink-0 pt-2 md:pt-0 border-t border-[#898952]/10 md:border-t-0">
-                      {/* DYNAMIC ACTIVE / INACTIVE DATA PREVIEW PILL */}
                       <div className="flex items-center gap-2">
                         <span
-                          className={`w-2 h-2 rounded-full ${
-                            item.isActive
-                              ? "bg-[#93E1D8] shadow-[0_0_8px_#93E1D8] animate-pulse"
-                              : "bg-red-500/50"
-                          }`}
+                          className={`w-2 h-2 rounded-full ${item.isActive ? "bg-[#93E1D8] shadow-[0_0_8px_#93E1D8]" : "bg-[#898952]/40"}`}
                         />
+                        {/* UPDATED: Displays explicit ACTIVE or INACTIVE text string status */}
                         <span
-                          className={`text-[11px] tracking-wide font-semibold uppercase ${
-                            item.isActive ? "text-[#93E1D8]" : "text-red-400/70"
-                          }`}
+                          className={`text-[11px] tracking-wide font-bold uppercase ${item.isActive ? "text-[#93E1D8]" : "text-[#898952]"}`}
                         >
-                          {item.isActive ? "Live Feed" : "Inactive"}
+                          {item.isActive ? "ACTIVE" : "INACTIVE"}
                         </span>
                       </div>
 
                       {/* SYSTEM ACTION ICON GRID */}
                       <div className="flex items-center gap-1">
                         <button
+                          type="button"
                           onClick={() => startEdit(item)}
                           className="p-2 text-[#898952] hover:text-[#93E1D8] hover:bg-[#161613] rounded-lg transition-colors"
                           title="Modify Entry"
@@ -406,6 +561,7 @@ const AdminReviewAllNotification = () => {
                           </svg>
                         </button>
                         <button
+                          type="button"
                           onClick={() => openDeleteModal(item._id)}
                           className="p-2 text-[#898952] hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
                           title="Purge Entry"
@@ -459,7 +615,7 @@ const AdminReviewAllNotification = () => {
                   onClick={confirmDelete}
                   className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-xs font-bold rounded-lg shadow-sm"
                 >
-                  Confirm Delete
+                  Confirm Purge
                 </button>
               </div>
             </div>

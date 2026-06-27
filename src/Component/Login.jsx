@@ -69,8 +69,8 @@ const LoginPage = () => {
     }
 
     try {
+      // const url = "https://notifynest-2.onrender.com/auth/login";
       const url = "https://notifynest-2.onrender.com/auth/login";
-      //const url = "https://localhost:5000/auth/login";
 
       const response = await fetch(url, {
         method: "POST",
@@ -256,7 +256,7 @@ const LoginPage = () => {
 
                 {/* Toggle Eye Button */}
                 <button
-                  type="button"
+                  type="submit"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-4 text-[#93E1D8] hover:text-[#462255] transition-colors"
                 >

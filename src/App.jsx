@@ -4,7 +4,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./Component/Home.jsx";
 import Login from "./Component/Login.jsx";
 import Signup from "./Component/Signup.jsx";
-import UserProfileUpload from "./UserProfile/UserProfileUpload.jsx";
 import Accountsettings from "./UserProfile/Accountsettings.jsx";
 import SetNotification from "./Component/SetNotification.jsx";
 import AdminSelect_AllUsers from "./Component/Admin/AdminSelect_AllUsers.jsx";
@@ -25,10 +24,6 @@ function App() {
             <Route path="/home" index element={<Home />}></Route>
             <Route path="/login" element={<Login />}></Route>
             <Route path="/signup" element={<Signup />}></Route>
-            <Route
-              path="/userProfileUpload"
-              element={<UserProfileUpload />}
-            ></Route>
             <Route
               path="/Accountsettings"
               element={<Accountsettings />}

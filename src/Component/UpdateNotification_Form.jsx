@@ -17,34 +17,119 @@ const AdminReviewAllNotification = () => {
     priority: "",
     isActive: true,
   });
+  const [admin, setAdmin] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const token_ = localStorage.getItem("token");
+  const email_ = localStorage.getItem("logggedInUserEmail");
+  if (!token_ && !email_) {
+    return (
+      <>
+        <div className="min-h-screen flex items-center justify-center bg-[#DDFFF7] p-6">
+          <div className="max-w-md w-full bg-white shadow-2xl rounded-3xl p-8 text-center border-t-8 border-[#B2945B]">
+            {/* Icon Container */}
+            <div className="flex justify-center mb-6">
+              <div className="bg-[#93E1D8] p-4 rounded-full">
+                <svg
+                  className="w-12 h-12 text-[#462255]"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                  />
+                </svg>
+              </div>
+            </div>
 
+            {/* Message */}
+            <h2 className="text-3xl font-bold text-[#462255] mb-2">
+              Restricted Access
+            </h2>
+            <p className="text-[#898952] mb-8">
+              This area is strictly for administrators. Please return to your
+              dashboard or contact support if you believe this is an error.
+            </p>
+
+            {/* Action Button */}
+            <button
+              onClick={() => window.history.back()}
+              className="w-full py-3 px-6 bg-[#B2945B] hover:bg-[#898952] text-white font-semibold rounded-xl transition-all duration-300 shadow-lg transform hover:-translate-y-1"
+            >
+              Return to Previous Page
+            </button>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  const restrictedAccess = () => {
+    return (
+      <>
+        <>
+          <div className="min-h-screen flex items-center justify-center bg-[#DDFFF7] p-6">
+            <div className="max-w-md w-full bg-white shadow-2xl rounded-3xl p-8 text-center border-t-8 border-[#B2945B]">
+              {/* Icon Container */}
+              <div className="flex justify-center mb-6">
+                <div className="bg-[#93E1D8] p-4 rounded-full">
+                  <svg
+                    className="w-12 h-12 text-[#462255]"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                    />
+                  </svg>
+                </div>
+              </div>
+
+              {/* Message */}
+              <h2 className="text-3xl font-bold text-[#462255] mb-2">
+                Restricted Access
+              </h2>
+              <p className="text-[#898952] mb-8">
+                This area is strictly for administrators. Please return to your
+                dashboard or contact support if you believe this is an error.
+              </p>
+
+              {/* Action Button */}
+              <button
+                onClick={() => window.history.back()}
+                className="w-full py-3 px-6 bg-[#B2945B] hover:bg-[#898952] text-white font-semibold rounded-xl transition-all duration-300 shadow-lg transform hover:-translate-y-1"
+              >
+                Return to Previous Page
+              </button>
+            </div>
+          </div>
+        </>
+      </>
+    );
+  };
   const fetchNotifications = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get(
-        "https://notifynest-2.onrender.com/AllNotification",
+      const response = await axios.get(
+        "https://notifynest-2.onrender.com/AllNotification/GeneralUsers",
         {
           headers: { Authorization: `Bearer ${token}` },
         },
       );
-      // if (res.data.message) {
-      //   setError("Error 1 : ", res.data.message);
-      // }
-      if (res.data.notifications) {
-        setNotifications(res.data.notifications);
-      } else {
-        setError("Error 2 :  No Right of Admin.");
-      }
+      setNotifications([response.data.notifications]);
     } catch (err) {
-      if (err.response?.status === 401) {
-        setError("Error 3 : Unauthorized Access");
-      } else {
-        // setError(
-        //   "Failed to sync notifications Or Restricted Access You dont have privilage to Access Admin page. Please refresh.",
-        // );
-        setError("Error 4 : " + err.response.data.message);
+      if (err.status === 403) {
+        setAdmin(true);
+        restrictedAccess();
       }
+      setError(err.message);
     } finally {
       setLoading(false);
     }
@@ -58,14 +143,16 @@ const AdminReviewAllNotification = () => {
   const confirmDelete = async () => {
     try {
       const token = localStorage.getItem("token");
+      console.log(deleteId);
       await axios.delete(
-        `https://notifynest-2.onrender.com/AllNotification/${deleteId}`,
+        `https://notifynest-2.onrender.com/AllNotification/delete/${deleteId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         },
       );
       setNotifications(notifications.filter((item) => item._id !== deleteId));
       setShowModal(false);
+      await fetchNotifications();
     } catch (err) {
       // console.error(err);
       alert("Unable to remove notification.");
@@ -83,7 +170,7 @@ const AdminReviewAllNotification = () => {
   };
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setEditFormData((prev) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
@@ -125,14 +212,67 @@ const AdminReviewAllNotification = () => {
     fetchNotifications();
   }, []);
 
-  const filteredNotifications = notifications.filter((item) => {
-    const query = searchQuery.toLowerCase();
+  const token = localStorage.getItem("token");
+  if (!token) {
     return (
-      item.name?.toLowerCase().includes(query) ||
-      item.message?.toLowerCase().includes(query) ||
-      item.isActive?.toLowerCase().includes(query)
+      <>
+        <div className="min-h-screen flex items-center justify-center bg-[#DDFFF7] p-6">
+          <div className="max-w-md w-full bg-white shadow-2xl rounded-3xl p-8 text-center border-t-8 border-[#B2945B]">
+            {/* Icon Container */}
+            <div className="flex justify-center mb-6">
+              <div className="bg-[#93E1D8] p-4 rounded-full">
+                <svg
+                  className="w-12 h-12 text-[#462255]"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                  />
+                </svg>
+              </div>
+            </div>
+
+            {/* Message */}
+            <h2 className="text-3xl font-bold text-[#462255] mb-2">
+              Restricted Access
+            </h2>
+            <p className="text-[#898952] mb-8">
+              This area is strictly for administrators. Please return to your
+              dashboard or contact support if you believe this is an error.
+            </p>
+
+            {/* Action Button */}
+            <button
+              onClick={() => window.history.back()}
+              className="w-full py-3 px-6 bg-[#B2945B] hover:bg-[#898952] text-white font-semibold rounded-xl transition-all duration-300 shadow-lg transform hover:-translate-y-1"
+            >
+              Return to Previous Page
+            </button>
+          </div>
+        </div>
+      </>
     );
-  });
+  }
+
+  if (admin) {
+    return restrictedAccess();
+  }
+
+  const filteredNotifications = notifications
+    .filter((item) => item !== null)
+    .filter((item) => {
+      const query = searchQuery.toLowerCase();
+
+      return (
+        item.name?.toLowerCase().includes(query) ||
+        item.message?.toLowerCase().includes(query)
+      );
+    });
 
   const getPriorityStyles = (priority) => {
     switch (priority?.toLowerCase()) {
@@ -399,6 +539,7 @@ const AdminReviewAllNotification = () => {
                       {/* SYSTEM ACTION ICON GRID */}
                       <div className="flex items-center gap-1">
                         <button
+                          type="button"
                           onClick={() => startEdit(item)}
                           className="p-2 text-[#898952] hover:text-[#93E1D8] hover:bg-[#161613] rounded-lg transition-colors"
                           title="Modify Entry"
@@ -418,6 +559,7 @@ const AdminReviewAllNotification = () => {
                           </svg>
                         </button>
                         <button
+                          type="button"
                           onClick={() => openDeleteModal(item._id)}
                           className="p-2 text-[#898952] hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
                           title="Purge Entry"
