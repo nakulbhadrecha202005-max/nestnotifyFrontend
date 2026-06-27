@@ -14,7 +14,7 @@ const About = () => {
             <span className="text-[#93E1D8]">Moment or Payment</span>
           </h2>
           <p className="text-[#898952] max-w-2xl mx-auto text-lg">
-            neverForgotis designed to be your personal digital memory—ensuring
+            NeverForgot is designed to be your personal digital memory—ensuring
             you stay on top of bills and important reminders effortlessly.
           </p>
         </div>
@@ -23,7 +23,7 @@ const About = () => {
         <div className="grid md:grid-cols-2 gap-16 items-center">
           <div className="bg-[#DDFFF7] p-8 rounded-[32px] border border-[#93E1D8]">
             <h3 className="text-2xl font-bold text-[#462255] mb-4">
-              The neverForgotVision
+              The NeverForgot Vision
             </h3>
             <p className="text-[#898952] leading-relaxed mb-6">
               Life moves fast. Our platform bridges the gap between your busy

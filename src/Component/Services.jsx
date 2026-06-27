@@ -28,7 +28,7 @@ const Services = () => {
         {/* Header */}
         <div className="text-center mb-16">
           <span className="text-[#06B6D4] font-bold uppercase tracking-widest text-xs">
-            neverForgotIntelligent Reminders
+            NeverForgot Intelligent Reminders
           </span>
           <h2 className="text-4xl md:text-5xl font-black text-[#334155] mt-4 mb-6">
             Never Forget a <span className="text-[#6366F1]">Payment Again</span>
