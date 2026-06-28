@@ -47,10 +47,10 @@ const AdminReviewAllNotification = () => {
 
             {/* Message */}
             <h2 className="text-3xl font-bold text-[#462255] mb-2">
-              Restricted Access
+              Login to access
             </h2>
             <p className="text-[#898952] mb-8">
-              This area is strictly for administrators. Please return to your
+              This area is strictly for Logged in Users. Please return to your
               dashboard or contact support if you believe this is an error.
             </p>
 
