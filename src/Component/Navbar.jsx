@@ -416,7 +416,7 @@ const Navbar = () => {
                   <span className="material-symbols-outlined text-base font-black">
                     add
                   </span>
-                  New Bill{" "}
+                  Add Reminder{" "}
                 </Link>
               </button>
             </div>
@@ -436,14 +436,14 @@ const Navbar = () => {
 
         {/* Payment / PhonePe Simulation Link */}
         <Link
-          to="/payments"
+          to="/AddReminders"
           className="flex flex-col items-center gap-0.5 text-[#462255]/60 hover:text-[#462255] transition-colors duration-200"
         >
-          <span className="material-symbols-outlined text-xl">
-            account_balance
+          <span className="material-symbols-outlined text-base font-black">
+            add_alert
           </span>
           <span className="text-[10px] font-medium tracking-wide">
-            Pay Bills
+            Add Reminder
           </span>
         </Link>
 
